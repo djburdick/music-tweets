@@ -1,18 +1,4 @@
-#! /usr/bin/env ruby
-
-lib = File.expand_path('../lib', __dir__)
-$LOAD_PATH.unshift(lib)
-
-lib = File.expand_path('../lib/aws', __dir__)
-$LOAD_PATH.unshift(lib)
-
-$LOAD_PATH.unshift(__dir__)
-
-require 'tmpdir'
-require 'fileutils'
 require 'base_consumer'
-
-require 'pry'
 
 class MusicTweetsConsumer < BaseConsumer
   # (see Aws::KCLrb::RecordProcessorBase#process_records)
@@ -32,12 +18,5 @@ class MusicTweetsConsumer < BaseConsumer
     checkpoint_helper(checkpointer, last_seq)  if last_seq
   end
 
-end
-
-if __FILE__ == $0
-  # Start the main processing loop
-  record_processor = MusicTweetsConsumer.new
-  driver = Aws::KCLrb::KCLProcess.new(record_processor)
-  driver.run
 end
 

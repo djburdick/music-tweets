@@ -7,6 +7,8 @@ SAMPLES_DIR = File.dirname(__FILE__)
 JAR_DIR = File.join(SAMPLES_DIR, 'jars')
 directory JAR_DIR
 
+BIN_DIR = File.expand_path('../bin', __dir__)
+
 def get_maven_jar_info(group_id, artifact_id, version)
   jar_name = "#{artifact_id}-#{version}.jar"
   jar_url = "http://repo1.maven.org/maven2/#{group_id.gsub(/\./, '/')}/#{artifact_id}/#{version}/#{jar_name}"
@@ -73,11 +75,11 @@ task :run => :download_jars do |t|
   classpath = FileList["#{JAR_DIR}/*.jar"].join(':')
   classpath += ":#{SAMPLES_DIR}"
 
-  ENV['PATH'] = "#{ENV['PATH']}:#{SAMPLES_DIR}"
+  ENV['PATH'] = "#{ENV['PATH']}:#{SAMPLES_DIR}:#{BIN_DIR}"
   commands = %W(
     #{ENV['JAVA_HOME']}/bin/java
     -classpath #{classpath}
-    com.amazonaws.services.kinesis.multilang.MultiLangDaemon sample.properties
+    com.amazonaws.services.kinesis.multilang.MultiLangDaemon kinesis.properties
   )
   sh *commands
 end
