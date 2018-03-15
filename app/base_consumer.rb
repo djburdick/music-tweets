@@ -10,8 +10,7 @@ require 'base64'
 require 'tmpdir'
 require 'fileutils'
 require 'kclrb'
-
-require 'pry'
+require 'cassandra'
 
 # @api private
 # A sample implementation of the {Aws::KCLrb::RecordProcessorBase RecordProcessor}.
@@ -40,6 +39,10 @@ class BaseConsumer < Aws::KCLrb::RecordProcessorBase
     else
       fail "Output destination cannot be nil"
     end
+
+    cluster = Cassandra.cluster
+    keyspace = ENV['APP_ENV'] == 'test' ? 'music_tweets_test' : 'music_tweets'
+    @cassandra_session  = cluster.connect(keyspace)
   end
 
   # (see Aws::KCLrb::RecordProcessorBase#init_processor)

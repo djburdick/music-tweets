@@ -71,11 +71,11 @@ class MusicTweetsProducer
 
   def load_markov_text
     @markov = MarkyMarkov::TemporaryDictionary.new
-    @markov.parse_file "../data/lcd_review_markov.txt"
+    @markov.parse_file "#{data_path}/lcd_review_markov.txt"
   end
 
   def load_artist_names
-    @artist_names = File.readlines("../data/artist_names.txt")
+    @artist_names = File.readlines("#{data_path}/artist_names.txt")
   end
 
   def artist_tweet_text
@@ -106,6 +106,10 @@ class MusicTweetsProducer
       },
       "retweet_count": 0
     }
+  end
+
+  def data_path
+    File.expand_path("../data", __dir__)
   end
 
   def get_stream_description

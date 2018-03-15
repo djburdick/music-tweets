@@ -4,10 +4,12 @@ class MusicTweetsConsumer < BaseConsumer
   # (see Aws::KCLrb::RecordProcessorBase#process_records)
   def process_records(records, checkpointer)
     last_seq = nil
+
     records.each do |record|
       begin
-        @output.puts Base64.decode64(record['data'])
-        @output.flush
+        data = Oj.load(Base64.decode64(record['data']))
+        @cassandra_session.execute("INSERT INTO events (id, comment) VALUES (1, '#{data['text']}')");
+
         last_seq = record['sequenceNumber']
       rescue => e
         # Make sure to handle all exceptions.
@@ -19,4 +21,3 @@ class MusicTweetsConsumer < BaseConsumer
   end
 
 end
-

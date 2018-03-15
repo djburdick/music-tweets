@@ -2,12 +2,12 @@ require 'open-uri'
 require 'aws-sdk-core'
 require 'aws-sdk-kinesis'
 
-SAMPLES_DIR = File.dirname(__FILE__)
+APP_DIR = File.expand_path('../../app', __dir__)
 
-JAR_DIR = File.join(SAMPLES_DIR, 'jars')
+JAR_DIR = File.join(APP_DIR, 'jars')
 directory JAR_DIR
 
-BIN_DIR = File.expand_path('../bin', __dir__)
+BIN_DIR = File.expand_path('../../bin', __dir__)
 
 def get_maven_jar_info(group_id, artifact_id, version)
   jar_name = "#{artifact_id}-#{version}.jar"
@@ -63,7 +63,7 @@ desc "Run KCL music producer to generate sample tweet data"
 task :run_producer do |t|
   puts "Running the Kinesis muisc tweets producer..."
   commands = %W(
-    #{SAMPLES_DIR}/music_tweets_producer.rb
+    #{APP_DIR}/music_tweets_producer.rb
   )
   sh *commands
 end
@@ -73,9 +73,9 @@ task :run => :download_jars do |t|
   fail "JAVA_HOME environment variable not set."  unless ENV['JAVA_HOME']
   puts "Running the Kinesis sample processing application..."
   classpath = FileList["#{JAR_DIR}/*.jar"].join(':')
-  classpath += ":#{SAMPLES_DIR}"
+  classpath += ":#{APP_DIR}"
 
-  ENV['PATH'] = "#{ENV['PATH']}:#{SAMPLES_DIR}:#{BIN_DIR}"
+  ENV['PATH'] = "#{ENV['PATH']}:#{APP_DIR}:#{BIN_DIR}"
   commands = %W(
     #{ENV['JAVA_HOME']}/bin/java
     -classpath #{classpath}
